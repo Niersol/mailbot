@@ -276,3 +276,8 @@ class PlayGroundView(View):
                 )
                 print(response.choices[0])
             return JsonResponse({'status':'success','msg':response.choices[0].message.content})
+
+class ChatLogView(View):
+
+    def get(self,request):
+        return render(request,'chat_logs/index.html')

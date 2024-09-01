@@ -38,9 +38,11 @@
 
     /* Chats container styling */
     .chat-container {
-    max-height: calc(100vh - 80px); /* Adjust this value based on the height of your typing container */
+        max-height: calc(100vh - 80px);
+        /* Adjust this value based on the height of your typing container */
         padding-bottom: 150px;
-            overflow-y: auto; /* Ensure the chat container can scroll */
+        overflow-y: auto;
+        /* Ensure the chat container can scroll */
 
     }
 
@@ -234,18 +236,23 @@
         color: var(--icon-color);
     }
 
-.typing-content #send-btn {
-    background-color: #cbd5d48c;
-    color: white;
-    width: 35px; /* Adjust width */
-    height: 35px; /* Adjust height */
-    border-radius: 50%; /* Make it round */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 5px;
-    cursor: pointer; /* Make it look clickable */
-}
+    .typing-content #send-btn {
+        background-color: #cbd5d48c;
+        color: white;
+        width: 35px;
+        /* Adjust width */
+        height: 35px;
+        /* Adjust height */
+        border-radius: 50%;
+        /* Make it round */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 5px;
+        cursor: pointer;
+        /* Make it look clickable */
+    }
+
     .typing-textarea span {
         position: absolute;
         right: 0;
@@ -318,7 +325,8 @@
             font-size: 1.25rem !important;
         }
     }
-    #delete-btn{
+
+    #delete-btn {
         background-color: #e55865;
         cursor: pointer;
         color: white;
@@ -331,7 +339,8 @@
     <div class="typing-content">
         <div class="typing-textarea">
             <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required></textarea>
-            <span id="send-btn" class="material-symbols-rounded"><i class="fa fa-arrow-up" aria-hidden="true"></i></span>
+            <span id="send-btn" class="material-symbols-rounded"><i class="fa fa-arrow-up"
+                    aria-hidden="true"></i></span>
         </div>
         <div class="typing-controls">
             <span id="delete-btn">Clear</span>
@@ -387,10 +396,10 @@
         // Send POST request to API, get response and set the reponse as paragraph element text
         try {
             const response = await (await fetch(API_URL, requestOptions)).json();
-            if(response.status =="failed"){
+            if (response.status == "failed") {
                 pElement.classList.add("error");
                 pElement.innerHTML = `<strong style='color:#00af9c'>Assistant:</strong> ${response.msg}.`;
-            }else{
+            } else {
                 pElement.innerHTML = `<strong style='color:#00af9c'>Assistant:</strong> ${response.msg}`;
             }
         } catch (error) { // Add error class to the paragraph element and set error text
