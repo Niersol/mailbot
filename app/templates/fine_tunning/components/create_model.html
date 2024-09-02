@@ -106,6 +106,20 @@ cursor: pointer;
     transition: background-color 0.3s ease;
     /* Smooth transition for background change */
   }
+   .saved-prompt-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .saved-prompt-actions i {
+    cursor: pointer;
+    color: #00af9c;
+  }
+
+  .saved-prompt-actions i:hover {
+    color: #00796b;
+  }
 </style>
 <div class="form-group row dark-theme" style="margin-bottom: 0px;">
 
@@ -140,8 +154,7 @@ cursor: pointer;
       <button class="add-example-btn">Add</button>
     </div>
   </div>
-  <!-- <div class="prompt mb-3" data-url="/dashboard/prompts/{{prompt.id}}"> -->
-  <div class="prompt mb-3" style="display: none;">
+  <div class="prompt mb-3" data-url="" style="display: none;">
     <div class="form-group">
       <label for="role-textarea">System:</label>
       <i class="bi bi-question-circle" data-bs-toggle="tooltip" data-bs-placement="right"
@@ -168,12 +181,16 @@ cursor: pointer;
     {% for saved_prompt in saved_prompts %}
     <div class="saved-prompt" data-id="{{ saved_prompt.id }}">
       <p><strong style="color:#00af9c;">User:</strong>{{ saved_prompt.user }}</p><hr style="border: 1px solid white;">
+      <div class="saved-prompt-actions">
+        <i class="fas fa-edit" data-id="{{ saved_prompt.id }}" title="Edit"></i>
+        <i class="fas fa-trash" data-id="{{ saved_prompt.id }}" title="Delete"></i>
+      </div>
     </div>
     <div class="prompt-details" id="prompt-details-{{ saved_prompt.id }}">
       {% if saved_prompt.system %}
       <p><strong style="color:#00af9c;">System:</strong>{{ saved_prompt.system }}</p> <hr style="border: 1px solid white;">
       {% endif %}
-      <p><strong style="color:#00af9c;">Assistant</strong>:{{ saved_prompt.assistant }}</p> <hr style="border: 1px solid white;">
+      <p><strong style="color:#00af9c;">Assistant:</strong>{{ saved_prompt.assistant }}</p> <hr style="border: 1px solid white;">
     </div>
     {% endfor %}
   </div>
@@ -217,9 +234,13 @@ cursor: pointer;
           success: function (response) {
             var newPromptId = response.example.id; // Unique ID for each prompt
             var newPrompt = $('<div class="saved-prompt" data-id="' + newPromptId + '"></div>').append(
-              '<p><strong style="color:#00af9c;">User</strong>:' + response.example.user + '</p>' + '<hr style="border: 1px solid white;">'
+              '<p><strong style="color:#00af9c;">User</strong>:' + response.example.user + '</p>' +
+              '<hr style="border: 1px solid white;">' +
+              '<div class="saved-prompt-actions">' +
+              '<i class="fas fa-edit" data-id="' + newPromptId + '" title="Edit"></i>' +
+              '<i class="fas fa-trash" data-id="' + newPromptId + '" title="Delete"></i>' +
+              '</div>'
             );
-
             var newPromptDetails = $('<div class="prompt-details" id="prompt-details-' + newPromptId + '" style="display: none;"></div>');
 
             // Conditionally append System prompt if it exists
