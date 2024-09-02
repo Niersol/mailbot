@@ -3,6 +3,7 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
+    /* General Styles */
     * {
         margin: 0;
         padding: 0;
@@ -37,10 +38,11 @@
         display: flex;
     }
 
+    /* Sidebar Styles */
     .sidebar-log {
         background-color: #30353a;
         color: white;
-        width: 20%;
+        width: 17%;
         height: 100vh;
         display: flex;
         flex-direction: column;
@@ -49,26 +51,67 @@
         top: 0;
         z-index: 400;
         transition: transform 0.3s ease;
+        overflow-y: auto;
     }
 
+    .sidebar-heading {
+        margin-top: 80px;
+        margin-bottom: 10px;
+        padding-left: 20px;
+        font-size: 1.5rem;
+        color: var(--text-color);
+        border-bottom: 3px solid var(--incoming-chat-border);
+        padding-bottom: 10px;
+    }
+
+    .sidebar-log ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+
+    .sidebar-log ul li {
+        padding: 15px 20px;
+        cursor: pointer;
+        border-bottom: 1px solid var(--incoming-chat-border);
+        transition: background-color 0.3s;
+    }
+
+    .sidebar-log ul li:hover {
+        background-color: var(--icon-hover-bg);
+    }
+
+    .sidebar-log ul li.active {
+        background-color: #343a40;
+    }
+
+    /* Toggle Button for Sidebar */
+    .toggle-sidebar-btn {
+        display: none;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: #50575e00;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 500;
+    }
+
+    /* Content Area Styles */
+    .content-log {
+        margin-left: 17%;
+        padding: 20px;
+        transition: margin-left 0.3s ease;
+    }
+
+    /* Chat Container Styles */
     .chat-container {
         max-height: calc(100vh - 80px);
         padding-bottom: 150px;
-        max-width: 80%;
-    }
-
-    :where(.chat-container, textarea)::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    :where(.chat-container, textarea)::-webkit-scrollbar-track {
-        background: var(--incoming-chat-bg);
-        border-radius: 25px;
-    }
-
-    :where(.chat-container, textarea)::-webkit-scrollbar-thumb {
-        background: var(--icon-color);
-        border-radius: 25px;
+        max-width: 100%;
     }
 
     .default-text {
@@ -86,36 +129,31 @@
         font-size: 3.3rem;
     }
 
-    .toggle-sidebar-btn {
-        display: none;
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background: #50575e00;
-        color: white;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-        z-index: 500;
-    }
-
-    .content-log {
-        margin-left: 20%;
-        width: 100%;
-        padding: 20px;
-        transition: margin-left 0.3s ease;
-    }
-
     .default-text p {
         margin-top: 10px;
         font-size: 1.1rem;
     }
 
+    /* Chat Styles */
     .chat-container .chat {
-        padding: 25px 10px;
+        padding: 5px 10px;
         display: flex;
         justify-content: center;
         color: var(--text-color);
+    }
+
+    .chat-container .chat-content {
+        display: flex;
+        max-width: 100%;
+        margin: 10px 0;
+    }
+
+    .chat-content.user-msg {
+        justify-content: flex-end;
+    }
+
+    .chat-content.assistant-msg {
+        justify-content: flex-start;
     }
 
     .chat-container .chat.outgoing {
@@ -125,38 +163,29 @@
     }
 
     .chat-container .chat.incoming {
-        background: var(--incoming-chat-bg);
-        border: 1px solid var(--incoming-chat-border);
+        background: var(--outgoing-chat-bg);
+        border: 1px solid var(--outgoing-chat-border);
         justify-content: flex-start;
     }
 
-    .chat .chat-content {
-        display: flex;
-        max-width: 1200px;
-        width: 100%;
-        align-items: flex-start;
-        justify-content: space-between;
-    }
-
-    span.material-symbols-rounded {
-        user-select: none;
-        cursor: pointer;
-    }
-
-    .chat .chat-content span {
-        cursor: pointer;
-        font-size: 1.3rem;
-        color: var(--icon-color);
-        visibility: hidden;
-    }
-
-    .chat:hover .chat-content:not(:has(.typing-animation), :has(.error)) span {
-        visibility: visible;
-    }
-
     .chat .chat-details {
-        display: flex;
-        align-items: center;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .chat-details.user-msg {
+        background-color: var(--incoming-chat-bg);
+        border: 1px solid var(--incoming-chat-border);
+        color: var(--text-color);
+        border-radius: 20px 0 20px 20px; /* Adjusted to create a pointer-like effect */
+    }
+
+    .chat-details.assistant-msg {
+        background-color: var(--incoming-chat-bg);
+        border: 1px solid var(--incoming-chat-border);
+        color: var(--text-color);
+            border-radius: 0 20px 20px 20px; /* Adjusted to create a pointer-like effect */
+
     }
 
     .chat .chat-details img {
@@ -168,9 +197,9 @@
     }
 
     .chat .chat-details p {
-        white-space: pre-wrap;
-        font-size: 1.05rem;
-        padding: 0 50px 0 25px;
+        margin: 5px;
+        padding-left: 10px;
+        font-size: 15px;
         color: var(--text-color);
         word-break: break-word;
     }
@@ -197,7 +226,55 @@
     .typing-animation .typing-dot:first-child {
         margin-left: 0;
     }
+    /* Scrollbar Styles for Dark Theme */
+    .sidebar-log::-webkit-scrollbar,
+    html::-webkit-scrollbar {
+        width: 6px;
+    }
 
+    .sidebar-log::-webkit-scrollbar-track,
+    html::-webkit-scrollbar-track {
+        background: var(--incoming-chat-bg);
+        border-radius: 25px;
+    }
+
+    .sidebar-log::-webkit-scrollbar-thumb,
+    html::-webkit-scrollbar-thumb {
+        background: var(--icon-color);
+        /* background: var(--scrollbar-thumb-bg); */
+        border-radius: 25px;
+    }
+
+    .sidebar-log::-webkit-scrollbar-thumb:hover,
+    html::-webkit-scrollbar-thumb:hover {
+        background: var(--text-color);
+    }
+
+    /* Icon Styles */
+    span.material-symbols-rounded {
+        user-select: none;
+        cursor: pointer;
+    }
+
+    .chat .chat-content span {
+        cursor: pointer;
+        font-size: 1.3rem;
+        color: var(--icon-color);
+        visibility: hidden;
+    }
+
+    .chat:hover .chat-content:not(:has(.typing-animation), :has(.error)) span {
+        visibility: visible;
+    }
+
+    /* Delete Button */
+    #delete-btn {
+        background-color: #e55865;
+        cursor: pointer;
+        color: white;
+    }
+
+    /* Keyframes */
     @keyframes animateDots {
 
         0%,
@@ -215,7 +292,31 @@
         }
     }
 
-    /* Reponsive Media Query */
+    /* Responsive Styles */
+    @media screen and (max-width: 768px) {
+        .sidebar-log {
+            width: 40%;
+            transform: translateX(-100%);
+        }
+
+        .chat-container {
+            max-width: 100%;
+        }
+
+        .content-log {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .toggle-sidebar-btn {
+            display: block;
+        }
+
+        .sidebar-log.active {
+            transform: translateX(0);
+        }
+    }
+
     @media screen and (max-width: 600px) {
         .default-text h1 {
             font-size: 2.3rem;
@@ -251,72 +352,212 @@
         }
     }
 
-    #delete-btn {
-        background-color: #e55865;
-        cursor: pointer;
-        color: white;
-    }
-
-    @media screen and (max-width: 768px) {
-        .sidebar-log {
-            width: 40%;
-            transform: translateX(-100%);
-        }
-
-        .chat-container {
-            max-width: 100%;
-        }
-
-        .content-log {
-            margin-left: 0;
-            width: 100%;
-        }
-
-        .toggle-sidebar-btn {
-            display: block;
-        }
-
-        .sidebar-log.active {
-            transform: translateX(0);
-        }
-    }
-
-    /* Mobile view */
     @media screen and (max-width: 480px) {
         .sidebar-log {
             width: 70%;
         }
     }
+
+    .chat-date-header {
+        text-align: center;
+        margin: 15px 0;
+        color: var(--text-color);
+    }
+
+    .chat-date-header p {
+        background: var(--incoming-chat-bg);
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: 500;
+    }
+    .search-input {
+    width: 90%;
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid var(--icon-color);
+    border-radius: 5px;
+    background-color: var(--incoming-chat-bg);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.search-input::placeholder {
+    color: var(--placeholder-color);
+}
 </style>
 
 <div class="sidebar-log">
-    <!-- Sidebar content here -->
+    <h2 class="sidebar-heading">Users</h2>
+    <input type="text" id="user-search" placeholder="Search users..." class="search-input">
+
+    <ul id="user-list">
+    </ul>
 </div>
 
 <div class="content-log">
     <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
-    <div class="chat-container"></div>
+    <div class="chat-container">
+        <div class="default-text">
+            <h1>Chat Logs</h1>
+            <p>Select any user, and spectate conversation.</p>
+        </div>
+
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $(document).click(function (event) {
+        const target = $(event.target);
+        const sidebar = $('.sidebar-log');
+        const toggleBtn = $('.toggle-sidebar-btn');
+
+        if (!sidebar.is(target) && sidebar.has(target).length === 0 && !toggleBtn.is(target) && sidebar.hasClass('active')) {
+            toggleSidebarChat()
+        }
+    });
+
+    const users_url = '{% url "users-list" %}'
+    const chatContainer = $(".chat-container");
+    var defaultText = `<div class="default-text">
+                    <h1>Chat Logs</h1>
+                    <p>Select any user, and spectate conversation.</p>
+                </div>`;
+    const createChatElement = (content, className) => {
+        // Create new div and apply chat, specified class and set html content of div
+        const chatDiv = document.createElement("div");
+        chatDiv.classList.add("chat", className);
+        chatDiv.innerHTML = content;
+        return chatDiv; // Return the created chat div
+    }
     $(document).ready(function () {
+        $.ajax({
+            url: users_url,
+            method: 'GET',
+            success: function (response) {
+                $('#user-list').empty();
+                // Populate the sidebar with users
+                response.active_users.forEach(user => {
+                    const listItem = `<li data-id=${user.id}>${user.username}</li>`;
+                    $('#user-list').append(listItem);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching users:', error);
+            }
+        })
+
+        $('#user-search').on('input', function () {
+        const query = $(this).val().toLowerCase();
+        $('#user-list li').each(function () {
+            const username = $(this).text().toLowerCase();
+            if (username.includes(query)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+        $('#user-list').on('click', 'li', function () {
+            $('#user-list li').removeClass('active');
+            let userId = $(this).data('id'); // Get the data-id value
+            let url = "{% url 'conversations' user_id=0 %}".replace('0', userId);
+            $(this).addClass('active');
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (response) {
+                    console.log(response)
+                    defaultText = `<div class="default-text">
+                            <h1>${response.user.username}</h1>
+                            <p>The selected user has no conversations available for viewing.</p>
+                        </div>`;
+                    $('.sidebar-log').removeClass('active');
+                    if (response.conversations.length === 0) {
+                        chatContainer.html(defaultText);
+
+                    } else {
+                        // Iterate over each conversation
+                        chatContainer.empty();
+                        let lastConversationId = null;  // Track the last conversation ID
+                        let lastDate = null;  // Track the last message date
+                        $.each(response.conversations, function (index, conversation) {
+                            $.each(conversation.messages, function (index, message) {
+                            const messageDate = new Date(message.created_at).toLocaleDateString();
+                            const messageTime = new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                // Check if the date has changed
+                                if(lastDate !== messageDate && lastConversationId !== conversation.conversation_id){
+                                    let dateHeader  = `<div class="chat-date-header">${messageDate} ${messageTime}</div>`;
+                                    lastDate = messageDate;
+                                    lastConversationId = conversation.conversation_id;
+                                    chatContainer.append(dateHeader);
+
+                                }else
+    
+                                // Add time if conversation ID changes within the same date
+                                if (lastConversationId !== conversation.conversation_id) {
+                                    let dateHeader  = `<div class="chat-date-header">${messageTime}</div>`;
+                                    lastConversationId = conversation.conversation_id;
+                                    chatContainer.append(dateHeader);
+                                }else
+                                if (lastDate !== messageDate) {
+                                    let dateHeader  = `<div class="chat-date-header">${messageDate}</div>`;
+                                    lastDate = messageDate;
+                                    chatContainer.append(dateHeader);
+                                }
+                                // if (formattedDate !== lastDate) {
+                                //     lastDate = formattedDate;
+                                //     let dateHeader = `<div class="chat-date-header">
+                                //         <p>${formattedDate}</p>
+                                //     </div>`;
+                                //     chatContainer.append(dateHeader);
+                                // }
+                                let html;
+                                if (message.role === 'user') {
+                                    html = `<div class="chat-content">
+                                    <div class="chat-details user-msg">
+                                        <p><strong style='color:#00af9c'>${response.user.username}:</strong> ${message.content}</p>
+                                    </div>
+                                </div>`;
+
+                                    // Create an outgoing chat div with user's message and append it to chat container
+                                    const outgoingChatDiv = createChatElement(html, "outgoing");
+                                    chatContainer.find(".default-text").remove();
+                                    chatContainer.append(outgoingChatDiv);
+                                    chatContainer.scrollTop(chatContainer[0].scrollHeight);
+                                } else if (message.role === 'assistant') {
+                                    html = `<div class="chat-content">
+                                    <div class="chat-details assistant-msg">
+                                        <p><strong style='color:#00af9c'>Assistant:</strong> ${message.content}</p>
+                                    </div>
+                                </div>`;
+
+                                    // Create an incoming chat div with assistant's message and append it to chat container
+                                    const incomingChatDiv = createChatElement(html, "incoming");
+                                    chatContainer.append(incomingChatDiv);
+                                    chatContainer.scrollTop(chatContainer[0].scrollHeight);
+                                }
+                            });
+                        });
+                        const lastMessage = chatContainer.children().last();
+                        if (lastMessage.length) {
+                            lastMessage[0].scrollIntoView({ behavior: 'smooth', block: 'end' });
+                        }
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching users:', error);
+                }
+            })
+        });
         $('.toggle-sidebar-btn').click(function () {
             toggleSidebarChat()
         })
         const chatContainer = $(".chat-container");
 
-        const loadDataFromLocalstorage = () => {
-            const defaultText = `<div class="default-text">
-                                <h1>Playground</h1>
-                                <p>Start a conversation and check the reliability of your model.<br> Your chat will be displayed here.</p>
-                            </div>`;
 
-            chatContainer.html(localStorage.getItem("all-chats") || defaultText);
-            chatContainer.scrollTop(chatContainer[0].scrollHeight);
-        };
-
-        loadDataFromLocalstorage();
     });
 
     function toggleSidebarChat() {

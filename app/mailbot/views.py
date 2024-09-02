@@ -1,21 +1,55 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views import View
-from openai import OpenAI
-from django.conf import settings
-from datetime import datetime
-from django.utils import timezone
-import json
-from django.template.loader import render_to_string
-from .models import *
-import tempfile
 import os
+import json
+import tempfile
+from openai import OpenAI
+from datetime import datetime
+from django.conf import settings
+from django.utils import timezone
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from .models import *
 from .functions import *
-
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 
 client = OpenAI(
     api_key=settings.OPENAI_APIKEY
 )
+
+def active_users_list(request):
+    users = User.objects.filter(is_active=True).exclude(is_staff=True, is_superuser=True)
+    
+    user_data = [{'id': user.pk, 'username': user.username} for user in users]
+    
+    return JsonResponse({'active_users': user_data})
+
+def user_conversations(request, user_id):
+    print(user_id)
+    model_content_type = ContentType.objects.get(app_label='api', model='conversation')
+    Conversation = model_content_type.model_class()
+
+    user = get_object_or_404(User, pk=user_id, is_active=True, is_staff=False, is_superuser=False)
+    
+    # Get all conversations for the user
+    conversations = Conversation.objects.filter(user=user).prefetch_related('messages')
+    
+    # Prepare the data to be returned as JSON
+    conversation_data = []
+    for conversation in conversations:
+        messages = [{'role': message.role, 'content': message.content, 'created_at': message.created_at} for message in conversation.messages.all()]
+        conversation_data.append({
+            'conversation_id': conversation.id,
+            'created_at': conversation.created_at,
+            'messages': messages
+        })
+
+    return JsonResponse({'user': {'id': user.pk, 'username': user.username}, 'conversations': conversation_data})
+
+
 def format_record(record):
     """Format a single record to match the desired JSON Lines format."""
     

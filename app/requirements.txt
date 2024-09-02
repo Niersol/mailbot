@@ -10,3 +10,6 @@ beautifulsoup4
 pytz
 redis
 celery
+djangorestframework
+djoser
+django-cors-headers

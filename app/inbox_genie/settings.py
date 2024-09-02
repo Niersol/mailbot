@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -38,12 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mailbot'
+    'corsheaders',
+    'djoser',
+    'rest_framework',
+    'mailbot',
+    'api'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -87,7 +92,10 @@ DATABASES = {
     }
 }
 
-
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+"ACCESS_TOKEN_LIFETIME": timedelta(days=1)
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -137,3 +145,23 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 # CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(" ")
 
 # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING':False,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+),
+
+}
+
+# DJOSER = {
+#     'SERIALIZERS':{
+#         'user_create':'api.serializers.UserCreateSerializer'
+#     }
+# }
+CORS_ALLOWED_ORIGINS = [
+    "http://172.30.144.1:5500",
+    'http://172.20.0.1:5500',
+    'http://localhost:5500',
+    'https://chatbot-frontend-umber.vercel.app'
+]
