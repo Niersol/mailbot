@@ -39,11 +39,8 @@
     /* Chats container styling */
     .chat-container {
         max-height: calc(100vh - 80px);
-        /* Adjust this value based on the height of your typing container */
         padding-bottom: 150px;
         overflow-y: auto;
-        /* Ensure the chat container can scroll */
-
     }
 
     :where(.chat-container, textarea)::-webkit-scrollbar {
@@ -240,17 +237,13 @@
         background-color: #cbd5d48c;
         color: white;
         width: 35px;
-        /* Adjust width */
         height: 35px;
-        /* Adjust height */
         border-radius: 50%;
-        /* Make it round */
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 5px;
         cursor: pointer;
-        /* Make it look clickable */
     }
 
     .typing-textarea span {
@@ -279,7 +272,7 @@
         background: var(--icon-hover-bg);
     }
 
-    /* Reponsive Media Query */
+    /* Responsive Media Query */
     @media screen and (max-width: 600px) {
         .default-text h1 {
             font-size: 2.3rem;
@@ -349,6 +342,16 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $(document).click(function (event) {
+        const target = $(event.target);
+        const sidebar = $('#sidebar');
+        const toggleBtn = $('.toggle-btn');
+
+        if (!sidebar.is(target) && sidebar.has(target).length === 0 && !toggleBtn.is(target) && sidebar.hasClass('active')) {
+            sidebar.removeClass('active');
+        }
+    });
+
     const chatInput = document.querySelector("#chat-input");
     const sendButton = document.querySelector("#send-btn");
     const chatContainer = document.querySelector(".chat-container");
@@ -425,7 +428,7 @@
     const showTypingAnimation = () => {
         // Display the typing animation and call the getChatResponse function
         const html = `<div class="chat-content">
-                    <div class="chat-details">
+                    <div class="chat-details assistant-msg">
                         <div class="typing-animation">
                             <div class="typing-dot" style="--delay: 0.2s"></div>
                             <div class="typing-dot" style="--delay: 0.3s"></div>
@@ -450,7 +453,7 @@
         chatInput.style.height = `${initialInputHeight}px`;
 
         const html = `<div class="chat-content">
-                    <div class="chat-details">
+                    <div class="chat-details user-msg">
                         <p><strong style='color:#00af9c'>User:</strong> ${userText}</p>
                     </div>
                 </div>`;
