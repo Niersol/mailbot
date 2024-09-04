@@ -46,9 +46,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -163,5 +163,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://172.30.144.1:5500",
     'http://172.20.0.1:5500',
     'http://localhost:5500',
-    'https://chatbot-frontend-umber.vercel.app'
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
 ]
+
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken','Authorization']
+CORS_ALLOW_CREDENTIALS = True

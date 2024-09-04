@@ -13,3 +13,4 @@ celery
 djangorestframework
 djoser
 django-cors-headers
+pillow
