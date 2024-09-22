@@ -1,12 +1,13 @@
 import uuid
 import json
+import base64
+import openai
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.conf import settings
-from openai import OpenAI
 from .serializers import ConversationSerializer, MessageSerializer
 from django.contrib.contenttypes.models import ContentType
 from .models import Conversation, Message
@@ -16,30 +17,17 @@ from rest_framework import generics, permissions
 from .models import Product, Collection, Cart, Order
 from .serializers import ProductSerializer, CollectionSerializer, CartSerializer, OrderSerializer
 from .functions import *
-tools = [
-    {
-        'type':'function',
-        'function':{
-            'name': 'inquiry_about_collection',
-            'description':'Call this function when some one inquires about Collection of Products. Such as, what to wear in winter? or Products to wear in Summer?',
-            "parameters":{
-                'type':'object',
-                'properties':{
-                    'collection_name':{
-                        'type':'string',
-                        'description':'The name of the collection, such as Formal Collection, Winter Collection, Summer Collection'
-                    }
-                },
-                'required':['collection_name'],
-                'additionalProperties':False,
-            },
-        }
-    },
-]
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render,redirect,get_object_or_404
+from .function_definitions import *
+
+
 client = OpenAI(
     api_key=settings.OPENAI_APIKEY
 )
 def get_assistant_response(messages):
+    tools = get_tools()
     model_content_type = ContentType.objects.get(app_label='mailbot', model='finetunningmodel')
     Model = model_content_type.model_class()
     selected_model = Model.objects.filter(selected=True)
@@ -57,24 +45,39 @@ def get_messages(conversation):
         list.append({'role':message.role,'content':message.content})
     return list
 
-def handleToolCall(tool_call):
+def handleToolCall(tool_call,request):
     tool_call_name = tool_call.function.name
     tool_call_id = tool_call.id
     arguments = json.loads(tool_call.function.arguments)
-    if tool_call_name == 'inquiry_about_collection':
-        return inquiry_about_collection(arguments)
+    if tool_call_name == 'get_crypto_price':
+         
+        content = get_crypto_price(arguments)
+    elif tool_call_name == "get_crypto_info":
+        content  = get_crypto_info(arguments)
+    elif tool_call_name == 'send_email':
+        content = send_email(arguments)
+    elif tool_call_name == 'schedule_event':
+        content = create_calendar_event(arguments)
+    elif tool_call_name == 'get_order_details':
+        content = get_order_details(arguments)
+    else:
+        content = 'Unknown tool call'    
+    return {
+        'role':'tool',
+        'content':content,
+        'tool_call_id':tool_call_id
+    }
 
 class ChatView(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request):
         user = request.user
-        # conversation_id = request.session.get('conversation_id')
-        # conversation = Conversation.objects.filter(id=uuid.UUID(conversation_id), user=user).first() if conversation_id else None
-        # messages = conversation.messages.all() if conversation else []
+        # conversation_id = request.session.get('conversation_id','')
+        conversation = Conversation.objects.filter(user=user)
+        messages = conversation.messages.all() 
+        return Response({
 
-        # serializer = MessageSerializer(messages, many=True)
-        return Response('ok')
+        })
 
     def post(self, request):
         user = request.user
@@ -92,31 +95,33 @@ class ChatView(APIView):
             print(conversation_id)
             conversation = get_object_or_404(Conversation, id=uuid.UUID(conversation_id), user=user)
             messages = get_messages(conversation)
-
         user_message = request.data.get('message')
         print(messages)
         messages.append({'role':'user','content':user_message})
-        # Save the user's message
+
         Message.objects.create(conversation=conversation, role='user', content=user_message)
-        data = ''
-        # Call the Chat Completion API to get the assistant's response
-        assistant_response = get_assistant_response(messages)
+        try:
+            assistant_response = get_assistant_response(messages)
+            print(assistant_response)
+        except Exception as e:
+            return Response({'response': f"couldn't generate msg {e}"})
+        print(assistant_response.content)
         if assistant_response.tool_calls:
             messages.append(assistant_response)
             tool_call_list = assistant_response.tool_calls
             for tool_call in tool_call_list:
-                response = handleToolCall(tool_call)
-                if(type(response)==list or response.role == 'raw'):
-                    data = response
-                else:
-                    messages.append(response)
-            reply = get_assistant_response(messages)
+                response = handleToolCall(tool_call,request)
+                messages.append(response)
+            reply = get_assistant_response(messages)   
+            reply = reply.content
+            print(reply)
         else:
             reply = assistant_response.content
-        Message.objects.create(conversation=conversation, role='assistant', content=reply)
-        
-        print(assistant_response)
-        return Response({'response': reply,'data':data}, status=status.HTTP_201_CREATED)
+        try:
+            Message.objects.create(conversation=conversation, role='assistant', content=reply)
+        except:
+            return Response({'response': "couldn't save  assistant msg"})     
+        return Response({'response': reply}, status=status.HTTP_201_CREATED)
 
 
 

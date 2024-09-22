@@ -18,7 +18,11 @@ class Message(models.Model):
         return f"{self.conversation.id} - {self.role}-{self.content}"
     
 #   ########################
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+
 class Product(models.Model):
+    category = models.ForeignKey(Category,on_delete=models.CASCADE,blank=True,null=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -97,3 +101,12 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in Order #{self.order.id}"
+
+# 3333333333333333333
+class Credentials(models.Model):
+    token = models.TextField()
+    refresh_token = models.TextField(blank=True,null=True)
+    token_uri = models.URLField()
+    client_id = models.CharField(max_length=255)
+    client_secret = models.CharField(max_length=255)
+    scopes = models.TextField()

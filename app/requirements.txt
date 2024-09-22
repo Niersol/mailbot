@@ -14,3 +14,5 @@ djangorestframework
 djoser
 django-cors-headers
 pillow
+channels
+channels_redis==3.3.1

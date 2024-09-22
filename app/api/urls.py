@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path,include
 from .views import ProductListView, ProductDetailView, CollectionListView, CollectionDetailView, CartListView, CartDetailView, OrderListView, OrderDetailView
 from .views import ImageListView, ImageDetailView,ChatView
-
 urlpatterns = [
     path('chat/',ChatView.as_view(),name='chat'),
     path('products/', ProductListView.as_view(), name='product-list'),
@@ -15,6 +14,5 @@ urlpatterns = [
     path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
     path('images/', ImageListView.as_view(), name='image-list'),
     path('images/<int:pk>/', ImageDetailView.as_view(), name='image-detail'),
-
 ]
 

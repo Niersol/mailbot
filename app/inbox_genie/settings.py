@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework',
     'mailbot',
-    'api'
+    'api',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +76,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'inbox_genie.wsgi.application'
+ASGI_APPLICATION = 'inbox_genie.asgi.application'
 
 
 # Database
@@ -149,8 +151,8 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING':False,
     'DEFAULT_AUTHENTICATION_CLASSES': (
-    'rest_framework_simplejwt.authentication.JWTAuthentication',
-),
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 
 }
 
@@ -169,3 +171,12 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken','Authorization']
 CORS_ALLOW_CREDENTIALS = True
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}

@@ -14,5 +14,11 @@ urlpatterns = [
     path('chat-logs/',views.ChatLogView.as_view(),name='chat-log'),
     path('users/',views.active_users_list,name='users-list'),
     path('users/<int:user_id>/conversations',views.user_conversations,name='conversations'),
+    path('api-key/',views.ApiKey.as_view(),name='api-key'),
+    # ########
+    path('authorize/', views.authorize, name='authorize'),
+    path('authorize/oauth2callback/', views.oauth2callback, name='oauth2callback'),
+    path('clear/', views.clear_credentials, name='clear_credentials'),
+
 ]
 

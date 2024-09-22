@@ -1,7 +1,9 @@
 from django.db import models
 from datetime import timedelta
 
-# Create your models here.
+class APIKey(models.Model):
+    api_key = models.CharField(max_length=255)
+    
 class FineTunningModel(models.Model):
     model_name = models.CharField(max_length=255,null=True,blank=True)
     model_id = models.CharField(max_length=255,unique=True)

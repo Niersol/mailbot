@@ -13,8 +13,8 @@ class adminMessage(admin.ModelAdmin):
 class adminProduct(admin.ModelAdmin):
     pass
 
-@admin.register(Image)
-class adminImages(admin.ModelAdmin):
+@admin.register(Category)
+class adminCategory(admin.ModelAdmin):
     pass
 
 @admin.register(Collection)
